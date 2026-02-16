@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\mocs_compilation_Debug.cpp">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\unit_tests\test_hand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\unit_tests\test_deck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\src\card.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\src\deck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\src\hand_class.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\src\hand_controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\mocs_compilation_Release.cpp">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\mocs_compilation_MinSizeRel.cpp">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <Filter>Source Files\Generated</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\header\card.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\header\deck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\header\hand_class.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\header\hand_controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\include_Debug\src\ui_mainwindow.h">
+      <Filter>Source Files\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\include_Release\src\ui_mainwindow.h">
+      <Filter>Source Files\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\include_MinSizeRel\src\ui_mainwindow.h">
+      <Filter>Source Files\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\include_RelWithDebInfo\src\ui_mainwindow.h">
+      <Filter>Source Files\Generated</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\SPAC-O-3\source\repos\black-jack\CMakeFiles\5badc7fffd511c26c35926fb8dda3b3a\autouic_(CONFIG).stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\SPAC-O-3\source\repos\black-jack\Black-Jack\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\autouic_Debug.stamp">
+      <Filter>Source Files\Generated</Filter>
+    </None>
+    <None Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\autouic_Release.stamp">
+      <Filter>Source Files\Generated</Filter>
+    </None>
+    <None Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\autouic_MinSizeRel.stamp">
+      <Filter>Source Files\Generated</Filter>
+    </None>
+    <None Include="C:\Users\SPAC-O-3\source\repos\black-jack\UnitTests_autogen\autouic_RelWithDebInfo.stamp">
+      <Filter>Source Files\Generated</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2389E3E8-CD08-350A-A9EE-43390D413EA3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{11706A3B-9B6B-3505-94A7-DF5FC89DD1FE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{DEC59368-1E8E-327C-B590-F57EDE94B4AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Generated">
+      <UniqueIdentifier>{459BA8DD-22F8-3AA3-8A7A-9E14E6148140}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

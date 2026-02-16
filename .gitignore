@@ -10,6 +10,15 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
+CMakePresets.json
+.vs
+.qt
+Black-Jack/out
+Black-Jack.dir
+Black-Jack_autogen
+Debug
+lib/Debug
+UnitTests_autogen
 
 # CLion
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

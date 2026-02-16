@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/SPAC-O-3/source/repos/black-jack/UnitTests[1]_tests.cmake")
+  include("C:/Users/SPAC-O-3/source/repos/black-jack/UnitTests[1]_tests.cmake")
+else()
+  add_test(UnitTests_NOT_BUILT UnitTests_NOT_BUILT)
+endif()
