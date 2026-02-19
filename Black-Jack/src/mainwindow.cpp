@@ -196,8 +196,6 @@ void MainWindow::DoubleDownButtonClicked()
 	{
 		StandButtonClicked();
 	}
-	//pUi->HitButton->setDisabled(true);
-	//pUi->DoubleDownButton->setDisabled(true);
 }
 
 void MainWindow::NewHandButtonClicked()
