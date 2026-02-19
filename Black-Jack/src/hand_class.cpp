@@ -50,7 +50,37 @@ bool Hand::IsHandSplitable()
 	return m_HandIsSplitable;
 }
 
+void Hand::SetHandIsBust()
+{
+	m_HandIsBust = true;
+}
+
+void Hand::SetHandValue(int Value)
+{
+	m_HandValue = Value;
+}
+
+void Hand::SetHandDoubleDown()
+{
+	m_HandDoubledDown = true;
+}
+
+bool Hand::GetHandDoubleDown()
+{
+	return m_HandDoubledDown;
+}
+
+bool Hand::IsHandBust()
+{
+	return m_HandIsBust;
+}
+
 int Hand::GetNumberOfAcesInHand()
 {
 	return m_NumberOfAcesInHand;
+}
+
+int Hand::GetHandValue()
+{
+	return m_HandValue;
 }

@@ -14,11 +14,15 @@ public:
 	void SplitHand(Card FirstNewCard, Card SecondNewCard);
 	void Stand();
 	void SurrenderHand();
-	void HandleNewHandValueAndEmitSignal(int NewHandValue, bool HandSizeIs5);
-	int CalculateHandAndReturnValue(Hand Hand);
+	void SetHandIsBust(int Hand);
+	void SetHandDoubleDown(int Hand);
+	void CalculateHandAndEmitValue(Hand& Hand);
 	int GetNumberOfCardsInHand();
 	int GetNumberOfHands();
-	Hand GetHand(bool IsPlayersHand);
+	int GetHandValue(int Hand);
+	bool GetHandDoubleDown(int Hand);
+	bool GetIsHandBust(int Hand);
+	Hand& GetHand(int Hand);
 	Card GetDealersFirstCard();
 	bool NoMorePlayerHands();
 
@@ -31,6 +35,6 @@ signals:
 
 private:
 	std::vector<Hand> m_Hands;
-	int m_SplitCounter = 1;
+	int m_PlayerHandCounter = 1;
 };
 

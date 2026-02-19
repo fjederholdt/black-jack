@@ -24,29 +24,18 @@ TEST_F(HandControllerTest, TestHandValues)
 	QObject::connect(pHandController, &HandController::signal_HandValue, [&](int NewValue)
 		{
 			HandValue = NewValue;
-			Bust = false;
-			BlackJack = false;
-		});
-
-	QObject::connect(pHandController, &HandController::signal_Bust, [&](int Value)
-		{
-			Bust = true;
-			BlackJack = false;
-			HandValue = Value;
-		});
-
-	QObject::connect(pHandController, &HandController::signal_21, [&]()
-		{
-			Bust = false;
-			BlackJack = true;
-			HandValue = 21;
+			Bust = NewValue > 21 ? true : false;
+			BlackJack = NewValue == 21 ? true : false;
 		});
 
 	bool IsPlayerHand = true;
 	Card AceHearts = Card(ACE, HEART);
 	Card KingHearts = Card(KING, HEART);
 	Card FiveHearts = Card(FIVE, HEART);
-	Card NineHeart = Card(NINE, HEART);
+	Card NineHearts = Card(NINE, HEART);
+	Card EightHearts = Card(EIGHT, HEART);
+	Card TenHearts = Card(TEN, HEART);
+	Card TwoHearts = Card(TWO, HEART);
 
 	pHandController->AddHand(AceHearts, KingHearts, false);// dealers hand
 	pHandController->AddHand(AceHearts, KingHearts, IsPlayerHand);
@@ -57,7 +46,7 @@ TEST_F(HandControllerTest, TestHandValues)
 	ASSERT_FALSE(BlackJack);
 	ASSERT_FALSE(Bust);
 	ASSERT_EQ(HandValue, 16);
-	pHandController->NewCard(NineHeart, IsPlayerHand);
+	pHandController->NewCard(NineHearts, IsPlayerHand);
 	ASSERT_FALSE(BlackJack);
 	ASSERT_TRUE(Bust) << HandValue;
 	ASSERT_EQ(HandValue, 25);
@@ -68,14 +57,14 @@ TEST_F(HandControllerTest, TestHandValues)
 	ASSERT_FALSE(BlackJack);
 	ASSERT_FALSE(Bust);
 	ASSERT_EQ(HandValue, 12);
-	pHandController->NewCard(NineHeart, IsPlayerHand);
+	pHandController->NewCard(NineHearts, IsPlayerHand);
 	ASSERT_EQ(HandValue, 21);
 	ASSERT_TRUE(BlackJack);
 	ASSERT_FALSE(Bust);
 	pHandController->SurrenderHand();
 
 	pHandController->AddHand(AceHearts, KingHearts, false);// dealers hand
-	pHandController->AddHand(FiveHearts, NineHeart, IsPlayerHand);
+	pHandController->AddHand(FiveHearts, NineHearts, IsPlayerHand);
 	ASSERT_FALSE(BlackJack);
 	ASSERT_FALSE(Bust);
 	ASSERT_EQ(HandValue, 14);
@@ -87,4 +76,20 @@ TEST_F(HandControllerTest, TestHandValues)
 	ASSERT_FALSE(BlackJack);
 	ASSERT_TRUE(Bust);
 	ASSERT_EQ(HandValue, 25);
+	pHandController->SurrenderHand();
+
+	pHandController->AddHand(AceHearts, KingHearts, false);// dealers hand
+	pHandController->AddHand(AceHearts, AceHearts, IsPlayerHand);
+	pHandController->SplitHand(TwoHearts, EightHearts);
+	ASSERT_FALSE(BlackJack);
+	ASSERT_FALSE(Bust);
+	ASSERT_EQ(HandValue, 19);
+	pHandController->NewCard(TenHearts, IsPlayerHand);
+	ASSERT_FALSE(BlackJack);
+	ASSERT_FALSE(Bust);
+	ASSERT_EQ(HandValue, 19);
+	pHandController->NewCard(NineHearts, IsPlayerHand);
+	ASSERT_FALSE(BlackJack);
+	ASSERT_TRUE(Bust);
+	ASSERT_EQ(HandValue, 28);
 }

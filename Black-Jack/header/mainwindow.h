@@ -38,19 +38,21 @@ private slots:
     void DoubleDownButtonClicked();
     void NewHandButtonClicked();
     void SurrenderButtonClicked();
-    //void OnNewHand();
-    void OnBust(int Value);
-    void On21();
+    void OnDeckCountChanged(int Count);
     void OnNewHandValue(int Value);
     void OnSplitEnabled(bool Enable);
 
 private:
+    void OnBust(int Value);
+    void On21();
     Card GetAndShowNewCard();
+    void Surrender(bool FromButton = false);
     void DisableButtons(bool Disable);
     void SetActiveHandLabel(int HandNumber);
     void FlipDealersFirstCard();
     void PerformSplitOfPlayerHand(Card FirstHandSecondCard, Card SecondHandSecondCard);
     void ReplaceCardPictureInLayout(QLayout* pLayout, std::string CardLabelName, std::string NewCardLabelName, std::string CardPicturePath);
+    void ReplaceCardPictureInActiveHandLayout(std::string OldCardLabelName, std::string NewCardLabelName, std::string NewCardPicturePath);
 
 private:
     Ui::MainWindow* pUi;
@@ -59,6 +61,7 @@ private:
     std::vector<QLabel*> m_PlayerCardPicture;
     std::vector<QLabel*> m_DealerCardPicture;
     int m_BetValue = 0;
+    int m_BetWinnings = 0;
     int m_CurrentPlayerHandValue = 0;
     int m_MaxPlayerHandValue = 0;
     std::vector<int> m_PlayerHandValues;
@@ -68,6 +71,7 @@ private:
     QLabel* m_pCardBacksidePicture;
     QSize m_CardSize;
     int m_CurrentPlayerHand = 0;
+    int m_Saldo = 100;
 };
 
 #endif // MAINWINDOW_H

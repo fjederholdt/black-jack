@@ -3,7 +3,6 @@
 
 #include <QApplication>
 #include "mainwindow.h"
-#include "Black-Jack.h"
 
 using namespace std;
 

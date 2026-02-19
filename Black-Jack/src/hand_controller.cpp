@@ -15,62 +15,56 @@ void HandController::AddHand(Card FirstCard, Card SecondCard, bool IsPlayersHand
 	{
 		emit signal_EnableSplitButton(false);
 	}
-	m_Hands.push_back(Hand(FirstCard, SecondCard));
-	HandleNewHandValueAndEmitSignal(CalculateHandAndReturnValue(m_Hands.back()), false /*Hand size is 5*/);
+	m_Hands.push_back(NewHand);
+	CalculateHandAndEmitValue(m_Hands.back());
 }
 
 void HandController::NewCard(Card NewCard, bool PlayersHand)
 {
-	if (PlayersHand == true)
-	{
-		Hand& CurrentHand = m_Hands.at(m_SplitCounter);
-		CurrentHand.NewCard(NewCard);
-		HandleNewHandValueAndEmitSignal(CalculateHandAndReturnValue(CurrentHand), (CurrentHand.GetHand().size() == 5));
-	}
-	else
-	{
-		Hand& CurrentHand = m_Hands.at(0);
-		CurrentHand.NewCard(NewCard);
-		HandleNewHandValueAndEmitSignal(CalculateHandAndReturnValue(CurrentHand), (CurrentHand.GetHand().size() == 5));
-	}
+	int HandNumber = (PlayersHand == true) ? m_PlayerHandCounter : 0;
+	Hand& CurrentHand = m_Hands.at(HandNumber);
+	CurrentHand.NewCard(NewCard);
+	CalculateHandAndEmitValue(CurrentHand);
 }
 
 void HandController::SplitHand(Card FirstNewCard, Card SecondNewCard)
 {
-	m_SplitCounter++;
+	m_PlayerHandCounter++;
 	Card SplitCard = m_Hands.back().GetHand().at(1);
 	m_Hands.back().SplitHand(FirstNewCard);
+	CalculateHandAndEmitValue(m_Hands.back());
 	AddHand(SplitCard, SecondNewCard, true);
 }
 
 void HandController::Stand()
 {
-	m_SplitCounter--;
+	if (m_PlayerHandCounter > 0)
+	{
+		m_PlayerHandCounter--;
+	}
+	if (m_PlayerHandCounter > 0)
+	{
+		emit signal_EnableSplitButton(m_Hands.at(m_PlayerHandCounter).IsHandSplitable());
+	}
 }
 
 void HandController::SurrenderHand()
 {
 	m_Hands.clear();
-	m_SplitCounter = 1;
+	m_PlayerHandCounter = 1;
 }
 
-void HandController::HandleNewHandValueAndEmitSignal(int NewHandValue, bool HandSizeIs5)
+void HandController::SetHandIsBust(int Hand)
 {
-	if (NewHandValue > 21)
-	{
-		emit signal_Bust(NewHandValue);
-	}
-	else if ((HandSizeIs5 == true) || (NewHandValue == 21))
-	{
-		emit signal_21();
-	}
-	else
-	{
-		emit signal_HandValue(NewHandValue);
-	}
+	m_Hands.at(Hand).SetHandIsBust();
 }
 
-int HandController::CalculateHandAndReturnValue(Hand hand)
+void HandController::SetHandDoubleDown(int Hand)
+{
+	m_Hands.at(Hand).SetHandDoubleDown();
+}
+
+void HandController::CalculateHandAndEmitValue(Hand& hand)
 {
 	std::vector<Card>& CalculateHand = hand.GetHand();
 	int sum = 0;
@@ -85,7 +79,12 @@ int HandController::CalculateHandAndReturnValue(Hand hand)
 			sum -= 10;
 		}
 	}
-	return sum;
+	if ((sum < 21) && (CalculateHand.size() == 5))
+	{
+		sum = 21;
+	}
+	hand.SetHandValue(sum);
+	emit signal_HandValue(sum);
 }
 
 int HandController::GetNumberOfCardsInHand()
@@ -98,16 +97,24 @@ int HandController::GetNumberOfHands()
 	return m_Hands.size();
 }
 
-Hand HandController::GetHand(bool IsPlayersHand)
+int HandController::GetHandValue(int Hand)
 {
-	if (IsPlayersHand == true)
-	{
-		return m_Hands.at(m_SplitCounter);
-	}
-	else
-	{
-		return m_Hands.at(0);
-	}
+	return m_Hands.at(Hand).GetHandValue();
+}
+
+bool HandController::GetHandDoubleDown(int Hand)
+{
+	return m_Hands.at(Hand).GetHandDoubleDown();
+}
+
+bool HandController::GetIsHandBust(int Hand)
+{
+	return m_Hands.at(Hand).IsHandBust();
+}
+
+Hand& HandController::GetHand(int Hand)
+{
+	return m_Hands.at(Hand);
 }
 
 Card HandController::GetDealersFirstCard()
@@ -117,5 +124,5 @@ Card HandController::GetDealersFirstCard()
 
 bool HandController::NoMorePlayerHands()
 {
-	return m_SplitCounter == 0;
+	return m_PlayerHandCounter == 0;
 }

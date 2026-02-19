@@ -11,11 +11,12 @@
 MainWindow::MainWindow(QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::MainWindow)
 {
 	pUi->setupUi(this);
+
 	m_CardSize = QSize(125, 200);
 	m_pCardBacksidePicture = new QLabel("Deck", this);
 	m_pCardBacksidePicture->setFixedSize(m_CardSize);
 	m_pCardBacksidePicture->setScaledContents(true);
-	m_pDeckController = new DeckController();
+	m_pDeckController = new DeckController(this);
 	m_pHandController = new HandController(this);
 
 	QPalette pal = pUi->centralwidget->palette();
@@ -40,11 +41,13 @@ MainWindow::MainWindow(QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::Mai
 	pUi->StandButton->show();
 	DisableButtons(true);
 	pUi->SplitButton->setDisabled(true);
-	
+	pUi->Saldo->setText(QString::number(m_Saldo));
+	pUi->BetSpinBox->setMaximum(m_Saldo);
+	pUi->BetSpinBox->setMinimum(1);
 	SetActiveHandLabel(0);
 
 	Connect();
-
+	m_pDeckController->ShuffleIfNeeded();
 	std::filesystem::path currentPath = std::filesystem::current_path();
 	try {
 		bool foundFolder = false;
@@ -85,8 +88,7 @@ void MainWindow::Connect()
 	connect(pUi->DoubleDownButton, &QPushButton::clicked, this, &MainWindow::DoubleDownButtonClicked);
 	connect(pUi->SurrenderButton, &QPushButton::clicked, this, &MainWindow::SurrenderButtonClicked);
 	connect(pUi->NewHandButton, &QPushButton::clicked, this, &MainWindow::NewHandButtonClicked);
-	connect(m_pHandController, &HandController::signal_21, this, &MainWindow::On21);
-	connect(m_pHandController, &HandController::signal_Bust, this, &MainWindow::OnBust);
+	connect(m_pDeckController, &DeckController::signal_DeckCount, this, &MainWindow::OnDeckCountChanged);
 	connect(m_pHandController, &HandController::signal_HandValue, this, &MainWindow::OnNewHandValue);
 	connect(m_pHandController, &HandController::signal_EnableSplitButton, this, &MainWindow::OnSplitEnabled);
 }
@@ -111,7 +113,7 @@ void MainWindow::CreateAndShowCardPictureLabel(std::string CardPicturePath, std:
 		SetActiveHandLabel(m_CurrentPlayerHand);
 		switch (m_CurrentPlayerHand)
 		{
-		case 0: 
+		case 0:
 		{
 			break;
 		}
@@ -155,8 +157,9 @@ void MainWindow::HitButtonClicked()
 
 void MainWindow::SplitButtonClicked()
 {
-	m_BetValue += m_BetValue;
-	m_CurrentPlayerHand++;
+	m_Saldo -= m_BetValue;
+	pUi->Saldo->setText(QString::number(m_Saldo));
+	m_BetWinnings += m_BetValue;
 	Card FirstHandCard = m_pDeckController->GetNewCard();
 	Card SecondHandCard = m_pDeckController->GetNewCard();
 	PerformSplitOfPlayerHand(FirstHandCard, SecondHandCard);
@@ -165,7 +168,6 @@ void MainWindow::SplitButtonClicked()
 
 void MainWindow::StandButtonClicked()
 {
-	m_PlayerHandValues.push_back(m_CurrentPlayerHandValue);
 	SetActiveHandLabel(--m_CurrentPlayerHand);
 	m_pHandController->Stand();
 	if (m_pHandController->NoMorePlayerHands() == true)
@@ -176,12 +178,26 @@ void MainWindow::StandButtonClicked()
 		FlipDealersFirstCard();
 		OnNewHandValue(m_DealerHandValue);
 	}
+	else
+	{
+		m_pHandController->CalculateHandAndEmitValue(m_pHandController->GetHand(m_CurrentPlayerHand));
+	}
 }
 
 void MainWindow::DoubleDownButtonClicked()
 {
-	m_BetValue += m_BetValue;
+	m_Saldo -= m_BetValue;
+	pUi->Saldo->setText(QString::number(m_Saldo));
+	m_BetWinnings += m_BetValue;
+	int HandToDoubleDownAndCheckBust = m_CurrentPlayerHand;
+	m_pHandController->SetHandDoubleDown(HandToDoubleDownAndCheckBust);
 	HitButtonClicked();
+	if ((m_pHandController->GetNumberOfHands() > 1) && (m_pHandController->GetIsHandBust(HandToDoubleDownAndCheckBust) == false) && (m_CurrentPlayerHandValue != 21))
+	{
+		StandButtonClicked();
+	}
+	//pUi->HitButton->setDisabled(true);
+	//pUi->DoubleDownButton->setDisabled(true);
 }
 
 void MainWindow::NewHandButtonClicked()
@@ -192,6 +208,10 @@ void MainWindow::NewHandButtonClicked()
 	m_CurrentPlayerHandValue = 0;
 	m_DealerHandValue = 0;
 	m_BetValue = pUi->BetSpinBox->value();
+	m_Saldo -= m_BetValue;
+	pUi->Saldo->setText(QString::number(m_Saldo));
+	pUi->BetSpinBox->setDisabled(true);
+	m_BetWinnings = m_BetValue;
 	DisableButtons(false);
 	m_FirstDealerCard = true;
 	m_IsPlayerHand = false;
@@ -203,8 +223,21 @@ void MainWindow::NewHandButtonClicked()
 
 void MainWindow::SurrenderButtonClicked()
 {
+	Surrender(true);
+}
+
+void MainWindow::Surrender(bool FromButton)
+{
+	if (FromButton == false)
+	{
+		m_Saldo += m_BetWinnings * 2;
+		pUi->Saldo->setText(QString::number(m_Saldo));
+	}
 	m_BetValue = 0;
-	pUi->BetSpinBox->setValue(m_BetValue);
+	m_BetWinnings = 0;
+	pUi->BetSpinBox->setDisabled(false);
+	pUi->BetSpinBox->setMaximum(m_Saldo);
+	pUi->BetSpinBox->setValue(1);
 	m_pHandController->SurrenderHand();
 	for (size_t i = 0; i < m_PlayerCardPicture.size(); i++)
 	{
@@ -231,7 +264,6 @@ void MainWindow::SurrenderButtonClicked()
 	pUi->NewHandButton->setDisabled(false);
 	m_CurrentPlayerHandValue = 0;
 	m_MaxPlayerHandValue = 0;
-	m_PlayerHandValues.clear();
 	m_DealerHandValue = 0;
 	pUi->HandOneLabel->setVisible(false);
 	pUi->HandTwoLabel->setVisible(false);
@@ -239,60 +271,123 @@ void MainWindow::SurrenderButtonClicked()
 	pUi->HandFourLabel->setVisible(false);
 }
 
+void MainWindow::OnDeckCountChanged(int Count)
+{
+	pUi->DeckCount->setText(QString::number(Count));
+}
+
 void MainWindow::OnBust(int Value)
 {
 	if (m_IsPlayerHand == true)
 	{
-		const QString Text = "Spillers håndværdi er " + QString::number(Value);
-		Dialog PlayerBustDialog("Spiller er bust", Text, this);
-		PlayerBustDialog.exec();
-	}
-	else
-	{
-		const QString Text = "Tillykke du har vundet " + QString::number(m_BetValue * 2);
-		Dialog PlayerWonDialog("Spiller vandt!", Text, this);
-		PlayerWonDialog.exec();
-	}
-	SurrenderButtonClicked();
-}
-
-void MainWindow::On21()
-{
-	if (m_IsPlayerHand == true)
-	{
-		OnNewHandValue(21);
+		m_pHandController->SetHandIsBust(m_CurrentPlayerHand);
 		StandButtonClicked();
 	}
 	else
 	{
-		OnNewHandValue(21);
+		const QString Text = "Dealer bust, You won: " + QString::number(m_BetWinnings * 2);
+		Dialog PlayerWonDialog("Player Won!", Text, this);
+		PlayerWonDialog.exec();
 	}
+}
+
+void MainWindow::On21()
+{
+	const QString Text = QString("Player got 21 on hand: ") + QString::number(m_CurrentPlayerHand);
+	Dialog Player21Dialog("Player 21", Text, this);
+	Player21Dialog.exec();
+	StandButtonClicked();
 }
 
 void MainWindow::OnNewHandValue(int Value)
 {
+	int NumberOfHands = m_pHandController->GetNumberOfHands();
 	if (m_IsPlayerHand == true)
 	{
 		m_CurrentPlayerHandValue = Value;
-		if (m_CurrentPlayerHandValue > m_MaxPlayerHandValue)
+		if (m_CurrentPlayerHandValue > 21)
 		{
-			m_MaxPlayerHandValue = m_CurrentPlayerHandValue;
+			OnBust(m_CurrentPlayerHandValue);
+		}
+		else if (m_CurrentPlayerHandValue == 21)
+		{
+			On21();
 		}
 	}
 	else
 	{
 		m_DealerHandValue = Value;
-		if ((m_DealerHandValue >= m_MaxPlayerHandValue) && (m_pHandController->GetNumberOfHands() > 1))
+		if (NumberOfHands > 1)
 		{
-			const QString Text = "Dealer won with:" + QString::number(m_DealerHandValue);
-			const QString Text2 = " against players: " + QString::number(m_MaxPlayerHandValue);
-			Dialog DealerWonDialog("Dealer won", Text + Text2, this);
-			DealerWonDialog.exec();
-			SurrenderButtonClicked();
-		}
-		else if ((m_DealerHandValue < m_MaxPlayerHandValue) && (m_IsPlayerHand == false))
-		{
-			m_pHandController->NewCard(GetAndShowNewCard(), m_IsPlayerHand);
+
+			// First check if player went bust on first and only hand
+			if ((NumberOfHands == 2) && (m_pHandController->GetIsHandBust(1) == true))
+			{
+				const QString Text = QString("Player went bust with value: ") + QString::number(Value);
+				Dialog PlayerBustDialog("Player bust", Text, this);
+				PlayerBustDialog.exec();
+			}
+			else
+			{
+				// Check Dealer 21
+				if (m_DealerHandValue == 21)
+				{
+					const QString Text = "Dealer got 21";
+					Dialog DealerWonDialog("Dealer won", Text, this);
+					DealerWonDialog.exec();
+					m_BetWinnings = 0;
+				}
+				// Check if Dealer hand is less than 17
+				else if (m_DealerHandValue < 17)
+				{
+					// We gamble! Dealer gets a new card
+					m_pHandController->NewCard(GetAndShowNewCard(), m_IsPlayerHand);
+				}
+				else
+				{
+					bool DealerBust = (m_DealerHandValue > 21);
+					bool AtleastOneHandWon = false;
+					for (int i = 1; i < NumberOfHands; i++)
+					{
+						int DoubleDown = m_pHandController->GetHandDoubleDown(i) == true ? 2 : 1;
+						int HandValue = m_pHandController->GetHandValue(i);
+						if (m_pHandController->GetIsHandBust(i) == true)
+						{
+							const QString Text = QString("Player hand ") + QString::number(i) + " went bust with value: " + QString::number(HandValue);
+							Dialog PlayerBustDialog("Player bust", Text, this);
+							PlayerBustDialog.exec();
+							m_BetWinnings -= m_BetValue * DoubleDown;
+							continue;
+						}
+						else if ((HandValue <= m_DealerHandValue) && (DealerBust == false))
+						{
+							const QString Text = "Dealer won with: " + QString::number(m_DealerHandValue);
+							const QString Text2 = " against players hand " + QString::number(i) + " with value: " + QString::number(HandValue);
+							Dialog DealerWonDialog("Dealer won", Text + Text2, this);
+							DealerWonDialog.exec();
+							m_BetWinnings -= m_BetValue * DoubleDown;
+						}
+						else
+						{
+							AtleastOneHandWon = true;
+						}
+					}
+					if (AtleastOneHandWon == true)
+					{
+						if (DealerBust == true)
+						{
+							OnBust(m_DealerHandValue);
+						}
+						else
+						{
+							const QString Text = "Congratulation you won: " + QString::number(m_BetWinnings * 2);
+							Dialog PlayerWonDialog("Player won!", Text, this);
+							PlayerWonDialog.exec();
+						}
+					}
+				}
+			}
+			Surrender();
 		}
 	}
 }
@@ -384,12 +479,47 @@ void MainWindow::FlipDealersFirstCard()
 void MainWindow::PerformSplitOfPlayerHand(Card FirstHandSecondCard, Card SecondHandSecondCard)
 {
 	Hand PlayerHand = m_pHandController->GetHand(true);
-	Card SecondCard = PlayerHand.GetHand().at(1);
-	ReplaceCardPictureInLayout(pUi->PlayerLayout, SecondCard.GetCardPictureName(), FirstHandSecondCard.GetCardPictureName(), FirstHandSecondCard.GetCardPicturePath().string());
+	Card SecondHandFirstCard = PlayerHand.GetHand().at(1);
+	ReplaceCardPictureInActiveHandLayout(SecondHandFirstCard.GetCardPictureName(), FirstHandSecondCard.GetCardPictureName(), FirstHandSecondCard.GetCardPicturePath().string());
+	m_CurrentPlayerHand++;
 	QSpacerItem* pHSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 	pUi->PlayerLayout->addItem(pHSpacer);
-	CreateAndShowCardPictureLabel(SecondCard.GetCardPicturePath().string(), SecondCard.GetCardPictureName());
+	CreateAndShowCardPictureLabel(SecondHandFirstCard.GetCardPicturePath().string(), SecondHandFirstCard.GetCardPictureName());
 	CreateAndShowCardPictureLabel(SecondHandSecondCard.GetCardPicturePath().string(), SecondHandSecondCard.GetCardPictureName());
+}
+
+void MainWindow::ReplaceCardPictureInActiveHandLayout(std::string OldCardLabelName, std::string NewCardLabelName, std::string NewCardPicturePath)
+{
+	switch (m_CurrentPlayerHand)
+	{
+	case 0:
+	{
+		break;
+	}
+	case 1:
+	{
+		ReplaceCardPictureInLayout(pUi->HandOneLayout, OldCardLabelName, NewCardLabelName, NewCardPicturePath);
+		break;
+	}
+	case 2:
+	{
+		ReplaceCardPictureInLayout(pUi->HandTwoLayout, OldCardLabelName, NewCardLabelName, NewCardPicturePath);
+		break;
+	}
+	case 3:
+	{
+		ReplaceCardPictureInLayout(pUi->HandThreeLayout, OldCardLabelName, NewCardLabelName, NewCardPicturePath);
+		break;
+	}
+	case 4:
+	{
+		ReplaceCardPictureInLayout(pUi->HandFourLayout, OldCardLabelName, NewCardLabelName, NewCardPicturePath);
+		break;
+	}
+	default:
+		break;
+	}
+
 }
 
 void MainWindow::ReplaceCardPictureInLayout(QLayout* pLayout, std::string OldCardLabelName, std::string NewCardLabelName, std::string NewCardPicturePath)
