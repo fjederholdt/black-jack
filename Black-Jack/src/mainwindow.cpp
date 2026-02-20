@@ -321,7 +321,7 @@ void MainWindow::OnNewHandValue(int Value)
 			// First check if player went bust on first and only hand
 			if ((NumberOfHands == 2) && (m_pHandController->GetIsHandBust(1) == true))
 			{
-				const QString Text = QString("Player went bust with value: ") + QString::number(Value);
+				const QString Text = QString("Player went bust with value: ") + QString::number(m_CurrentPlayerHandValue);
 				Dialog PlayerBustDialog("Player bust", Text, this);
 				PlayerBustDialog.exec();
 			}
