@@ -13,8 +13,7 @@ jobs:
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
     - name: Install dependencies
-      run: |
-        vcpkg install qt6-base:x64-Windows
+      run: vcpkg install
     - name: Configure CMake
       run: |
         cmake -B build -S . ^ 

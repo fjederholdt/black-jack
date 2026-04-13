@@ -1,0 +1,8 @@
+{
+  "name": "Black-Jack",
+  "version": "1.0.0",
+  "dependencies": [
+    "qt6-base"
+  ],
+  "builtin-baseline": "805487f86c4b2033c6c28ee6e041928fa181d799"
+}
