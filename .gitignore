@@ -19,10 +19,11 @@ Black-Jack_autogen
 Debug
 lib/Debug
 UnitTests_autogen
-*.vc
+UnitTests_include.cmake
+UnitTests_tests.cmake
+*.vcxproj*
+*.sln
 *.coverage
-UnitTests[1]_include.cmake
-UnitTests[1]_tests.cmake
 
 # CLion
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

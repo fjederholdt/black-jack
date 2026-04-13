@@ -21,6 +21,7 @@ set(CMAKE_AUTOMOC ON)
 
 qt_standard_project_setup()
 
+# Add source to this project's executable.
 qt_add_executable(Black-Jack
 header/card.h
 header/deck.h
@@ -43,8 +44,6 @@ src/main.cpp
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/header)
 
 target_link_libraries(Black-Jack PRIVATE Qt6::Widgets)
-# Add source to this project's executable.
-#add_executable (Black-Jack "main.cpp" "Black-Jack.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Black-Jack PROPERTY CXX_STANDARD 20)

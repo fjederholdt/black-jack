@@ -1,0 +1,45 @@
+name: Build Qt App (Windows)
+
+on:
+push:
+pull_request:
+
+jobs:
+build-windows:
+runs-on: windows-latest
+
+steps:
+- name: Checkout repo
+  uses: actions/checkout@v4
+ 
+- name: Setup MSVC
+  uses: ilammy/msvc-dev-cmd@v1
+
+- name: Setup vcpkg
+  uses: lukka/run-vcpkg@v11
+  with:
+    vcpkgGitCommitId: master
+
+- name: Install dependencies
+  run: |
+    vcpkg install qt6-base:x64-Windows
+    
+- name: Configure CMake
+  run: |
+    cmake -B build -S . ^ 
+      -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.
+      -DVCPKG_TARGET_TRIPLET=x64-Windows
+
+- name: Build
+  run: cmake --build build --config Release
+
+- name: Deploy Qt (windeployqt)
+  run: |
+    cd build/Release
+    windeployqt Black-Jack.exe
+
+- name: Upload artifact
+  uses: action/upload-artifact@v4
+  with:
+    name: Black-Jack-Windows
+    path: build/Release
