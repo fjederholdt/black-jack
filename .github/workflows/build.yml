@@ -19,7 +19,7 @@ jobs:
         arch: win64_msvc2022_64
     - name: Configure CMake
       run: |
-        cmake -B build -S . `
+        cmake -B build -S Black-Jack `
           -DCMAKE_PREFIX_PATH="$env:Qt6_DIR"
     - name: Build
       run: cmake --build build --config Release
