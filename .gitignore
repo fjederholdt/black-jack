@@ -19,6 +19,8 @@ Black-Jack_autogen
 Debug
 lib/Debug
 UnitTests_autogen
+*.vc
+*.coverage
 
 # CLion
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
