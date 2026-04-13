@@ -22,7 +22,7 @@ set(CMAKE_AUTOMOC ON)
 qt_standard_project_setup()
 
 # Add source to this project's executable.
-qt_add_executable(Black-Jack
+qt_add_executable(Black-Jack WIN32
 header/card.h
 header/deck.h
 header/deck_controller.h

@@ -8,7 +8,7 @@
 #include <QDialog>
 
 
-MainWindow::MainWindow(QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::MainWindow)
+MainWindow::MainWindow(QPixmap CardBackSidePicture, QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::MainWindow)
 {
 	pUi->setupUi(this);
 
@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::Mai
 	m_pCardBacksidePicture = new QLabel("Deck", this);
 	m_pCardBacksidePicture->setFixedSize(m_CardSize);
 	m_pCardBacksidePicture->setScaledContents(true);
+	m_pCardBacksidePicture->setPixmap(CardBackSidePicture);
 	m_pDeckController = new DeckController(this);
 	m_pHandController = new HandController(this);
 
@@ -48,36 +49,7 @@ MainWindow::MainWindow(QWidget* pParent) : QMainWindow(pParent), pUi(new Ui::Mai
 
 	Connect();
 	m_pDeckController->ShuffleIfNeeded();
-	std::filesystem::path currentPath = std::filesystem::current_path();
-	try {
-		bool foundFolder = false;
-		for (const auto& entry : std::filesystem::recursive_directory_iterator(currentPath)) {
-			if (entry.is_directory() && entry.path().filename() == "spillekort") {
-				std::filesystem::path backPicturePath = entry.path();
-				backPicturePath += std::filesystem::path("\\Backside.png");
-				QPixmap pixmap(QString::fromStdString(backPicturePath.string()));
-
-				if (!pixmap.isNull()) {
-					m_pCardBacksidePicture->setPixmap(pixmap);
-					pUi->DeckLayout->addWidget(m_pCardBacksidePicture);
-				}
-				else
-				{
-					qDebug() << "Kunne ikke loade billede:" << QString::fromStdString(backPicturePath.string());
-				}
-				foundFolder = true;
-				break;
-			}
-		}
-		if (foundFolder == false)
-		{
-			std::cout << "Mappen 'spillekort' blev ikke fundet." << std::endl;
-		}
-	}
-	catch (const std::filesystem::filesystem_error& e) {
-		std::cerr << "Filesystem fejl: " << e.what() << std::endl;
-	}
-
+	pUi->DeckLayout->addWidget(m_pCardBacksidePicture);
 }
 
 void MainWindow::Connect()

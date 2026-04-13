@@ -30,6 +30,11 @@ jobs:
       run: |
         cd build/Release
         windeployqt Black-Jack.exe
+    - name: Prepare playing cards folder (read-only)
+      run: |
+        chmod -R a-w Black-Jack/spillekort
+        chmod -R u+r Black-Jack/spillekort
+        cp Black-Jack/spillekort build/Release
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:

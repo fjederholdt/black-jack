@@ -3,6 +3,7 @@
 
 #include <qmainwindow.h>
 #include <QLabel>
+#include <QPixmap>
 #include <atomic>
 
 #include "hand_controller.h"
@@ -18,7 +19,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget* pParent = nullptr);
+    MainWindow(QPixmap pCardBackSidePicture, QWidget* pParent = nullptr);
     void Connect();
 
 signals:
