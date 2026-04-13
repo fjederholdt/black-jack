@@ -1,5 +1,5 @@
 {
-  "name": "Black-Jack",
+  "name": "black-jack",
   "version": "1.0.0",
   "dependencies": [
     "qt6-base"
