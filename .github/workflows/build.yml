@@ -12,8 +12,6 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
-      with:
-        vcpkgGitCommitId: master
     - name: Install dependencies
       run: |
         vcpkg install qt6-base:x64-Windows
