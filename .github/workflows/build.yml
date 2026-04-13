@@ -29,7 +29,7 @@ jobs:
         cd build/Release
         windeployqt Black-Jack.exe
     - name: Upload artifact
-      uses: action/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         name: Black-Jack-Windows
         path: build/Release
