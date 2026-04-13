@@ -21,6 +21,8 @@ lib/Debug
 UnitTests_autogen
 *.vc
 *.coverage
+UnitTests[1]_include.cmake
+UnitTests[1]_tests.cmake
 
 # CLion
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

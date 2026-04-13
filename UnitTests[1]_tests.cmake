@@ -1,7 +1,0 @@
-add_test([=[HandControllerTest.TestHandValues]=]  C:/Users/SPAC-O-3/source/repos/black-jack/Debug/UnitTests.exe [==[--gtest_filter=HandControllerTest.TestHandValues]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[HandControllerTest.TestHandValues]=]  PROPERTIES WORKING_DIRECTORY C:/Users/SPAC-O-3/source/repos/black-jack SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-add_test([=[Test_Deck.NoDuplicateCards]=]  C:/Users/SPAC-O-3/source/repos/black-jack/Debug/UnitTests.exe [==[--gtest_filter=Test_Deck.NoDuplicateCards]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[Test_Deck.NoDuplicateCards]=]  PROPERTIES WORKING_DIRECTORY C:/Users/SPAC-O-3/source/repos/black-jack SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-add_test([=[Test_Deck.NoTwoDecksAreEqual]=]  C:/Users/SPAC-O-3/source/repos/black-jack/Debug/UnitTests.exe [==[--gtest_filter=Test_Deck.NoTwoDecksAreEqual]==] --gtest_also_run_disabled_tests)
-set_tests_properties([=[Test_Deck.NoTwoDecksAreEqual]=]  PROPERTIES WORKING_DIRECTORY C:/Users/SPAC-O-3/source/repos/black-jack SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==])
-set(  UnitTests_TESTS HandControllerTest.TestHandValues Test_Deck.NoDuplicateCards Test_Deck.NoTwoDecksAreEqual)
