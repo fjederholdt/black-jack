@@ -1,6 +1,7 @@
 ﻿// Black-Jack.cpp : Defines the entry point for the application.
 #include "mainwindow.h"
 
+#include <iostream>
 #include <QApplication>
 #include <QMessageBox>
 #include <QLabel>
@@ -9,6 +10,8 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+	QApplication app(argc, argv);
+	QMessageBox errMsg;
 	std::filesystem::path currentPath = std::filesystem::current_path();
 	std::string errorMessage = "";
 	bool foundFolder = false;
@@ -35,20 +38,16 @@ int main(int argc, char *argv[])
 
 	if (errorMessage.empty() == false)
 	{
-		QMessageBox errMsg;
 		errMsg.setText(QString::fromStdString(errorMessage));
-		errMsg.exec();
+		return errMsg.exec();
 	}
 	else if (foundFolder == false)
 	{
-		QMessageBox errMsg;
 		errMsg.setText("Mappen 'spillekort' blev ikke fundet.");
-		errMsg.exec();
-
+		return errMsg.exec();
 	}
 	else
 	{
-		QApplication app(argc, argv);
 		MainWindow window(CardBacksidePixmap);
 		window.show();
 		return app.exec();
