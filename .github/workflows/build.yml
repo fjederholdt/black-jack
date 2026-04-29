@@ -31,7 +31,8 @@ jobs:
         cd build/Release
         windeployqt Black-Jack.exe
     - name: Prepare playing cards folder (read-only)
-      run: cp Black-Jack/spillekort build/Release
+      run: |
+        Copy-Item -Path .\Black-Jack\spillekort -Destination .\build\Release -Recurse
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
